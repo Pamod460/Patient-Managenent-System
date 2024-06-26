@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Sign Up{% endblock %}
+
+{% block content %}
+<div>
+<h2 class="text-center">Sign Up</h2>
+<form id="signup-form" method="POST" style="width: 250px; height: 350px;">
+    <div class="form-group">
+        <label for="username">Username:</label>
+        <input type="text" class="form-control" id="username" name="username" required>
+    </div>
+    <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" class="form-control" id="password" name="password" required>
+    </div>
+    <div class="form-group">
+        <label for="confirm_password">Confirm Password:</label>
+        <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+    </div>
+    <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
+</form>
+
+<div id="message"></div>
+<p class="mt-3">Already have an account? <a href="{{ url_for('login') }}">Log in</a></p>
+</div>
+<script>
+    $(document).ready(function () {
+        function validatePasswordMatch() {
+            const password = $('#password').val();
+            const confirmPassword = $('#confirm_password').val();
+            if (password === confirmPassword) {
+                $('#confirm_password').closest('.form-group').removeClass('invalid').addClass('valid');
+                $('#message').text('Passwords match').css('color', 'green');
+                return true;
+            } else {
+                $('#confirm_password').closest('.form-group').removeClass('valid').addClass('invalid');
+                $('#message').text('Passwords do not match').css('color', 'red');
+                return false;
+            }
+        }
+
+        $('#password, #confirm_password').on('keyup', function () {
+            validatePasswordMatch();
+        });
+
+
+
+        $('#signup-form').on('submit', function (e) {
+            e.preventDefault();
+            var username = $('#username').val();
+            var password = $('#password').val();
+            var confirmPassword = $('#confirm-password').val();
+
+            if (!validatePasswordMatch()) {
+                $('#message').text('Passwords do not match').css('color', 'red');
+                return;
+            }
+            var hashedPassword = CryptoJS.SHA256(password).toString();
+            console.log($(this));
+            $.ajax({
+
+                url: '{{ url_for("signup") }}',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    username: username,
+                    password: hashedPassword,
+                    confirm_password: hashedPassword
+                }),
+
+                success: function (response) {
+                    console.log(response);
+                    if (response.success) {
+                        $('#message').text(response.message).css('color', 'green');
+                        window.location.href = "{{ url_for('login') }}";
+                    } else {
+                        $('#message').text(response.message).css('color', 'red');
+                    }
+                },
+                error: function (xhr) {
+                    const response = JSON.parse(xhr.responseText);
+                    $('#message').text(response.message).css('color', 'red');
+                }
+            });
+        });
+    });
+</script>
+
+<style>
+    .form-group.valid input {
+        border-color: rgba(76, 175, 80, 0.5);
+        /* Lighter green */
+    }
+
+    .form-group.invalid input {
+        border-color: rgba(244, 67, 54, 0.5);
+        /* Lighter red */
+    }
+</style>
+{% endblock %}

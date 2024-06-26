@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Add Patient{% endblock %}
+
+{% block content %}
+<style>
+    .modal-backdrop{
+        position: relative;
+    }
+</style>
+<div id="alert-container" style="z-index: 1000; display: flex; position: relative !important; right: 35%;"></div>
+<h2 class="text-center">Add Patient</h2>
+<form id="patient-form"  enctype="multipart/form-data">
+    <div class="row">
+        <div class="col-lg-6 col-md-12"><label id="message"></label>
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="birthday">Birthday:</label>
+                <input type="date" class="form-control" id="birthday" name="birthday" required>
+            </div>
+            <div class="form-group">
+                <label for="age">Age:</label>
+                <input type="number" class="form-control" id="age" name="age">
+            </div>
+            <div class="form-group">
+                <label for="gender">Gender:</label>
+                <select class="form-control" id="gender" name="gender" required>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="contact">Contact : </label> <span id="phone-validation-message"></span>
+                <input type="text" class="form-control" id="contact" name="contact" required>
+            </div>
+        </div>
+        <div class="col-lg-6 col-md-12">
+            <div class="form-group">
+                <label for="photo">Photo</label>
+                <div id="my_camera"></div>
+                <br />
+                <button class="button" type="button" onClick="take_snapshot()">
+                    <i class="fas fa-camera"></i>
+                  </button>
+                  
+                <button class="button" type="button" onClick="retake_snapshot()">
+                    <i class="fas fa-redo-alt"></i>
+                </button>
+
+                <input type="hidden" name="photo" class="image-tag">
+                <div id="results"></div>
+            </div>
+        </div>
+    </div>
+
+    <button type="button" class="btn btn-primary btn-block" onclick="submitForm()">Update Patient</button>
+</form>
+<script src="{{url_for('static',filename='js/update_patient.js')}}"></script>
+{% endblock %}

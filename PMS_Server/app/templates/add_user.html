@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Add Patient{% endblock %}
+
+{% block content %}
+<h2 class="text-center">Add User</h2>
+<form id="userForm" action="{{ url_for('add_user') }}" onsubmit="return false">
+    <div class="form-group">
+        <label for="username">Username:</label>
+        <input type="text" class="form-control" id="username" name="username" required>
+    </div>
+    <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" class="form-control" id="password" name="password" required>
+    </div>
+    <div class="form-group">
+        <label for="confirm_password">Confirm Password:</label>
+        <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+    </div>
+    <button type="submit" class="btn btn-primary btn-block">Add User</button>
+</form>
+
+<div class="alert alert-primary" id="alert" role="alert">
+    A simple primary alert—check it out!
+</div>
+<script src="{{url_for('static',filename='js/add_user.js')}}"></script>
+{% endblock %}

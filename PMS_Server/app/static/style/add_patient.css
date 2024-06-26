@@ -1,0 +1,29 @@
+.form-control.valid {
+    background-color: rgba(76, 175, 80, 0.1);
+    /* Lighter green */
+}
+
+.form-control.invalid {
+    background-color: rgba(244, 67, 54, 0.1);
+    /* Lighter red */
+}
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 20px;
+    margin: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+  }
+  .button i {
+    margin-right: 8px;
+  }
+  .button:hover {
+    background-color: #0056b3;
+  }

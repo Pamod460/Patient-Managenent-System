@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Patient Management System{% endblock %}</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css"
+        rel="stylesheet">
+    <link href="{{url_for('static',filename='style/base.css')}}" rel="stylesheet">
+    <link href="{{url_for('static',filename='style/add_patient.css')}}" rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+
+</head>
+
+<body>
+    <div class="sidebar-toggle" onclick="toggleSidebar()">☰</div>
+
+    <div class="sidebar" id="sidebar">
+        <a class="navbar-brand" href="{{ url_for('index') }}">PMS</a>
+        {% if current_user.is_authenticated %}
+        <a class="nav-link" href="{{ url_for('index') }}">Dashboard</a>
+        <button class="dropdown-btn">Patient
+            <i class="fa fa-caret-down"></i>
+        </button>
+        <div class="dropdown-container">
+            <a href="{{ url_for('add_patient') }}">Add Patient</a>
+            <a href="">View Patients</a>
+        </div>
+        <button class="dropdown-btn">Record
+            <i class="fa fa-caret-down"></i>
+        </button>
+        <div class="dropdown-container">
+            <a href="{{ url_for('daily_report') }}">Add New Record</a>
+            <a href="{{ url_for('daily_report') }}">View All Records</a>
+        </div>
+        <button class="dropdown-btn">User
+            <i class="fa fa-caret-down"></i>
+        </button>
+        <div class="dropdown-container">
+            <a href="{{ url_for('users') }}">Add New User</a>
+            <a href="{{ url_for('users') }}">view All Users</a>
+        </div>
+        <button class="dropdown-btn">Report
+            <i class="fa fa-caret-down"></i>
+        </button>
+        <div class="dropdown-container">
+            <a href="{{ url_for('daily_report') }}">Daily Report</a>
+            <a href="{{ url_for('daily_report') }}">OverAll Report</a>
+        </div>
+        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+        {% else %}
+        <div id="btnSignup">
+            <a class="nav-link" href="{{ url_for('signup') }}">Sign Up</a>
+        </div>
+        <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+        {% endif %}
+    </div>
+
+    <div class="main-content" id="main-content">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="alert alert-warning" role="alert">
+            {% for category, message in messages %}
+            <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        <div>
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <script src="{{url_for('static',filename='js/base.js')}}"></script>
+</body>
+
+</html>

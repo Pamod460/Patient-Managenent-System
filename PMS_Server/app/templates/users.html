@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Search Patient{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{url_for('static',filename='style/patient.css')}}">
+<div>
+    <h2 class="text-center">Patients</h2>
+    <form id="searchForm" method="POST" onsubmit="return false">
+        <div class="form-group">
+            <label for="birthday">Birthday:</label>
+            <input id="txtSearchDOB" type="text" class="form-control datepicker" placeholder="Select a date"
+                name="birthday">
+        </div>
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" class="form-control" id="txtSearchName" name="name">
+        </div>
+    </form>
+    <div id="results"></div>
+</div>
+
+<div class="alert alert-warning alert-dismissible fade show" role="alert" id="alert">
+    <p id="alertMessage"></p>
+</div>
+<div id="customConfirm" class="custom-confirm">
+    <div class="custom-confirm-content">
+        <p id="message"></p>
+        <button id="confirmYes" class="btn btn-danger">Yes</button>
+        <button id="confirmNo" class="btn btn-secondary">No</button>
+    </div>
+</div>
+<script SRC="{{url_for('static',filename='js/users.js')}}"></script>
+
+{% endblock %}

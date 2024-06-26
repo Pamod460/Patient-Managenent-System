@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<div>
+<h2 class="text-center">Login</h2>
+<form id="loginForm" method="post" style="width: 250px; height: 300px;">
+    <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" class="form-control" id="username" name="username" required>
+    </div>
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" class="form-control" id="password" name="password" required>
+    </div>
+    <button type="submit" class="btn btn-primary btn-block">Login</button>
+</form></div>
+<script>
+    $(document).ready(function () {
+        $('#loginForm').on('submit', function (event) {
+            event.preventDefault(); // Prevent default form submission
+            var username = $('#username').val();
+            var password = $('#password').val();
+            var hashedPassword = CryptoJS.SHA256(password).toString();
+            $.ajax({
+                url: "{{ url_for('login') }}",
+                method: "POST",
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    username: username,
+                    password: hashedPassword,
+                }),
+                success: function (response) {
+                    console.log(response);
+                    // Handle success response
+                    if (response.success) {
+                        window.location.href = "{{ url_for('index') }}"; // Redirect to index if login is successful
+                    } else {
+                        alert(response.message); // Show error message
+                    }
+                },
+                error: function (xhr, status, error) {
+                    // Handle error response
+                    console.error(error);
+                    alert('An error occurred while processing your request. Please try again.');
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

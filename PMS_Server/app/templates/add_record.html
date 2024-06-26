@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Add Medical Record{% endblock %}
+
+{% block content %}
+<h2 class="text-center">Add Medical Record</h2>
+<form method="POST" style="width: 700px; height: 500px;" action="{{ url_for('add_record', patient_id=patient_id) }}">
+    <div class="row">
+        <div class="col-6">
+            <div class="form-group">
+                <label for="record_date">Date:</label>
+                <input type="date" class="form-control" id="record_date" name="record_date" required>
+            </div>
+            <div class="form-group">
+                <label for="complaints">Complaints:</label>
+                <textarea class="form-control" id="complaints" name="complaints" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="history">History:</label>
+                <textarea class="form-control" id="history" name="history" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="diagnosed">Diagnosed:</label>
+                <textarea class="form-control" id="diagnosed" name="diagnosed" required></textarea>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="form-group">
+                <label for="treatment">Treatment:</label>
+                <textarea class="form-control" id="treatment" name="treatment" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="next_review">Charges</label>
+                <input type="text" class="form-control" id="charges" name="charges">
+            </div>
+            <div class="form-group">
+                <label for="next_review">Next Review Date:</label>
+                <input type="date" class="form-control" id="next_review" name="next_review">
+            </div>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary btn-block">Add Record</button>
+</form>
+{% endblock %}
