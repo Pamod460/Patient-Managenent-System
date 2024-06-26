@@ -1,0 +1,54 @@
+<mat-sidenav-container class="justify-content-center">
+  <mat-sidenav #sidenav mode="side" class="mat-sidenav" opened="opened">
+    <mat-nav-list>
+      <mat-list-item routerLink="home">Home
+      </mat-list-item>
+<!--          User      -->
+      <mat-expansion-panel *ngIf="authService.isAdmin()" class="custom-panel px-0 pb-0">
+        <mat-expansion-panel-header class="px-0 pe-1">
+          <mat-list-item>User</mat-list-item>
+        </mat-expansion-panel-header>
+        <mat-list-item routerLink="users/new">Add New User</mat-list-item>
+        <mat-list-item routerLink="users/all">View All Users</mat-list-item>
+      </mat-expansion-panel>
+<!--      patient -->
+      <mat-expansion-panel class="custom-panel px-0 pb-0">
+        <mat-expansion-panel-header class="px-0 pe-1">
+          <mat-list-item>Patients</mat-list-item>
+        </mat-expansion-panel-header>
+        <mat-list-item routerLink="patients/new">Add New Patient</mat-list-item>
+        <mat-list-item routerLink="patients/all">View All Patients</mat-list-item>
+      </mat-expansion-panel>
+<!--   Medical record   -->
+      <mat-expansion-panel class="custom-panel px-0 pb-0">
+        <mat-expansion-panel-header class="px-0 pe-1">
+          <mat-list-item>Medical Record</mat-list-item>
+        </mat-expansion-panel-header>
+        <mat-list-item routerLink="records/new">Add New Record</mat-list-item>
+        <mat-list-item routerLink="/records/all">View All Records</mat-list-item>
+      </mat-expansion-panel>
+<!--      Report-->
+      <mat-expansion-panel class="custom-panel px-0 pb-0">
+        <mat-expansion-panel-header class="px-0 pe-1">
+          <mat-list-item>Report</mat-list-item>
+        </mat-expansion-panel-header>
+        <mat-list-item routerLink="reports/daily">Daily Report</mat-list-item>
+        <mat-list-item routerLink="reports/custom">Custom Report</mat-list-item>
+      </mat-expansion-panel>
+      <mat-list-item (click)="authService.logout()" routerLink="login"><mat-icon>logout</mat-icon></mat-list-item>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content style="background: #aaaaaa">
+    <div class="example-button-container">
+      <button mat-mini-fab (click)="sidenav.toggle()" class="mt-1 ms-1" style="background: #3888b0;color: white"
+              aria-label="Example icon button with a menu icon">
+        <mat-icon>menu</mat-icon>
+      </button>
+    </div>
+    <div class="d-flex justify-content-center mt-1" >
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+
+

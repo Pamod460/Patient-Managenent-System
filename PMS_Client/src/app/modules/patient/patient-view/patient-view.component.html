@@ -1,0 +1,83 @@
+
+
+  <form [formGroup]="searchForm" class="search-form">
+    <h2 class="text-center">Patients</h2>
+    <div class="row">
+      <div class="col-6 ">
+      <mat-form-field class="w-100" appearance="fill">
+        <mat-label>Birthday</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="birthday" placeholder="Select a date">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+        <mat-hint style="color: red">mm/dd/yyyy</mat-hint>
+      </mat-form-field>
+      </div>
+      <div class="col-6">
+      <mat-form-field  class="w-100" appearance="fill">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" placeholder="Enter name">
+      </mat-form-field></div>
+    </div>
+  </form>
+
+
+  <div class="">
+  <table  mat-table [dataSource]="filteredPatients" class="">
+    <ng-container  matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef> Name</th>
+      <td mat-cell *matCellDef="let patient"> {{ patient.name }}</td>
+    </ng-container>
+    <!-- Age Column -->
+    <ng-container matColumnDef="age">
+      <th mat-header-cell *matHeaderCellDef> Age</th>
+      <td mat-cell *matCellDef="let patient"> {{ patient.age }}</td>
+    </ng-container>
+
+    <!-- Birthday Column -->
+    <ng-container matColumnDef="birthday">
+      <th mat-header-cell *matHeaderCellDef> Birthday</th>
+      <td mat-cell *matCellDef="let patient"> {{ patient.birthday | date }}</td>
+    </ng-container>
+
+    <!-- Contact Column -->
+    <ng-container matColumnDef="contact">
+      <th mat-header-cell *matHeaderCellDef> Contact</th>
+      <td mat-cell *matCellDef="let patient"> {{ patient.contact }}</td>
+    </ng-container>
+
+    <!-- Gender Column -->
+    <ng-container matColumnDef="gender">
+      <th mat-header-cell *matHeaderCellDef> Gender</th>
+      <td mat-cell *matCellDef="let patient"> {{ patient.gender }}</td>
+    </ng-container>
+
+    <!-- Photo Column -->
+    <!--    <ng-container matColumnDef="photo">-->
+    <!--      <th mat-header-cell *matHeaderCellDef> Photo </th>-->
+    <!--      <td mat-cell *matCellDef="let patient"> <img src="data:image/jpeg;base64,{{patient}}" alt="{{patient.name}}" width="50"> </td>-->
+    <!--    </ng-container>-->
+
+
+    <!-- Registered Date Column -->
+    <ng-container matColumnDef="registered_date">
+      <th mat-header-cell *matHeaderCellDef>Registered Date</th>
+      <td mat-cell *matCellDef="let patient"> {{ patient.registered_date|date }}</td>
+    </ng-container>
+    <!--    button area -->
+    <ng-container matColumnDef="delete">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let patient"><button mat-icon-button (click)="delete(patient)"><mat-icon>delete</mat-icon></button></td>
+    </ng-container>
+    <ng-container matColumnDef="modify">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let patient" routerLink="../modify/{{patient.id}}"> <button mat-icon-button ><mat-icon>edit</mat-icon></button></td>
+    </ng-container>
+    <ng-container matColumnDef="medrec">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let patient" routerLink="/records/new/{{patient.id}}"> <button mat-icon-button ><mat-icon>note_add</mat-icon></button></td>
+    </ng-container>
+    <!-- Header and Row Declarations -->
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>

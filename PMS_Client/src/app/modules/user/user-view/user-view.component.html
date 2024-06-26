@@ -1,0 +1,66 @@
+<div class="">
+  <table mat-table [dataSource]="users" class="">
+
+    <ng-container matColumnDef="username">
+      <th mat-header-cell *matHeaderCellDef> Name</th>
+      <td mat-cell *matCellDef="let user"> {{ user.username }}</td>
+    </ng-container>
+    <ng-container matColumnDef="is_admin">
+      <th mat-header-cell *matHeaderCellDef> Name</th>
+      <td mat-cell *matCellDef="let user"> {{ user.is_admin }}</td>
+    </ng-container>
+
+    <!-- Age Column -->
+<!--    <ng-container matColumnDef="age">-->
+<!--      <th mat-header-cell *matHeaderCellDef> Age</th>-->
+<!--      <td mat-cell *matCellDef="let user"> {{ user.age }}</td>-->
+<!--    </ng-container>-->
+
+    <!-- Birthday Column -->
+<!--    <ng-container matColumnDef="birthday">-->
+<!--      <th mat-header-cell *matHeaderCellDef> Birthday</th>-->
+<!--      <td mat-cell *matCellDef="let user"> {{ user.birthday | date }}</td>-->
+<!--    </ng-container>-->
+
+    <!-- Contact Column -->
+<!--    <ng-container matColumnDef="contact">-->
+<!--      <th mat-header-cell *matHeaderCellDef> Contact</th>-->
+<!--      <td mat-cell *matCellDef="let user"> {{ user.contact }}</td>-->
+<!--    </ng-container>-->
+
+    <!-- Gender Column -->
+<!--    <ng-container matColumnDef="gender">-->
+<!--      <th mat-header-cell *matHeaderCellDef> Gender</th>-->
+<!--      <td mat-cell *matCellDef="let user"> {{ user.gender }}</td>-->
+<!--    </ng-container>-->
+
+    <!-- Photo Column -->
+    <!--    <ng-container matColumnDef="photo">-->
+    <!--      <th mat-header-cell *matHeaderCellDef> Photo </th>-->
+    <!--      <td mat-cell *matCellDef="let user"> <img src="data:image/jpeg;base64,{{user}}" alt="{{user.name}}" width="50"> </td>-->
+    <!--    </ng-container>-->
+
+
+    <!-- Registered Date Column -->
+    <ng-container matColumnDef="registered_date">
+      <th mat-header-cell *matHeaderCellDef>Registered Date</th>
+      <td mat-cell *matCellDef="let user"> {{ user.registered_date|date }}</td>
+    </ng-container>
+    <!--    button area -->
+    <ng-container matColumnDef="delete">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let user"><button mat-icon-button (click)="delete(user)"><mat-icon>delete</mat-icon></button></td>
+    </ng-container>
+    <ng-container matColumnDef="modify">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let user" routerLink="../modify/{{user.id}}"> <button mat-icon-button ><mat-icon>edit</mat-icon></button></td>
+    </ng-container>
+    <ng-container matColumnDef="medrec">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let user" routerLink="/records/new/{{user.id}}"> <button mat-icon-button ><mat-icon>note_add</mat-icon></button></td>
+    </ng-container>
+    <!-- Header and Row Declarations -->
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>

@@ -1,0 +1,27 @@
+::ng-deep .signup-form{
+.mdc-text-field--filled:not(.mdc-text-field--disabled) {
+  background-color: #ffffff;
+}
+
+  .mat-form-field-appearance-outline .mat-form-field-outline-thick {
+    color: #020011;
+  }
+
+}
+.signup-form{
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 16px;
+  color: #020011;
+}
+
+mat-toolbar{
+  background-color: #f8f8f8;
+  color: #333333;
+  display: flex;
+  justify-content: center;
+}
+
+mat-card{
+  background-color: white;
+}
