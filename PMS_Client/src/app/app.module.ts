@@ -54,11 +54,7 @@ import {MatGridListModule} from "@angular/material/grid-list";
     MatButtonModule,
     MatIconModule,
     HttpClientModule,
-    ToastrModule.forRoot({
-      timeOut: 3000,
-      positionClass: 'toast-bottom-right',
-      preventDuplicates: true,
-    }),
+    ToastrModule.forRoot() ,
     MatDialogModule,
     FormsModule,
     NgChartsModule,

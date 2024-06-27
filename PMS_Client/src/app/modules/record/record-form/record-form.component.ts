@@ -98,8 +98,11 @@ export class RecordFormComponent implements OnInit {
 
       } else if (value[0].path == "new") {
         this.route.paramMap.subscribe(async params => {
-          this.patient = await this.patientService.getPatientById(params.get('id'));
-          this.setId(this.patient)
+          if (params.get('id')!=null){
+            this.patient = await this.patientService.getPatientById(params.get('id'));
+            this.setId(this.patient)
+          }
+
         });
       }
     })

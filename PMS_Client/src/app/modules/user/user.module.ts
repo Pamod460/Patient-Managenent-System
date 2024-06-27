@@ -16,6 +16,7 @@ import {MatSelectModule} from "@angular/material/select";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatGridListModule} from "@angular/material/grid-list";
+import {MatCardModule} from "@angular/material/card";
 
 
 
@@ -25,29 +26,30 @@ import {MatGridListModule} from "@angular/material/grid-list";
     UserFormComponent,
     UserViewComponent
   ],
-  imports: [
-    CommonModule,
-    UserRoutingModule,
-    MatButtonModule,
-    MatIconModule,
-    MatTableModule,
-    MatInputModule,
-    ReactiveFormsModule,
-    MatDatepickerModule,
-    MatOptionModule,
-    WebcamModule,
-    MatSelectModule,
-    MatSnackBarModule,
-    MatInputModule,
-    MatButtonModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatIconModule,
-    MatGridListModule,
-    MatTableModule,
-    MatSnackBarModule,
-  ]
+    imports: [
+        CommonModule,
+        UserRoutingModule,
+        MatButtonModule,
+        MatIconModule,
+        MatTableModule,
+        MatInputModule,
+        ReactiveFormsModule,
+        MatDatepickerModule,
+        MatOptionModule,
+        WebcamModule,
+        MatSelectModule,
+        MatSnackBarModule,
+        MatInputModule,
+        MatButtonModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatIconModule,
+        MatGridListModule,
+        MatTableModule,
+        MatSnackBarModule,
+        MatCardModule,
+    ]
 })
 export class UserModule { }

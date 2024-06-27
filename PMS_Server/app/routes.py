@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Optional, Union
 from flask import request, render_template, redirect, session, url_for, jsonify, flash
 from flask_jwt_extended import (
     create_access_token,
@@ -6,6 +6,7 @@ from flask_jwt_extended import (
     decode_token,
     get_jwt_identity,
     jwt_required,
+    verify_jwt_in_request,
 )
 from flask_login import login_user, login_required, logout_user, current_user
 from werkzeug.utils import secure_filename
@@ -36,22 +37,42 @@ def protected():
     return jsonify(logged_in_as=current_user), 200
 
 
+# User loading functions
 @login_manager.user_loader
 def load_user(user_id):
     query = "SELECT * FROM users WHERE id = %s"
     user = fetch_one(query, (user_id,))
     if user:
-        return User(id=user[0], username=user[1], password=user[2], is_admin=user[3])
+        return User(user['id'], user['username'], user['password'], user['is_admin'])
     return None
 
+def load_user_by_username(username):
+    query = "SELECT * FROM users WHERE username = %s"
+    user = fetch_one(query, (username,))
+    print(f"Debug: Retrieved user data: {user}")
+    if user is None:
+        return None
+    try:
+        return User(user['id'], user['username'], user['password'], user['is_admin'])    
+    except IndexError as e:
+        print(f"Debug: IndexError - {e}")
+        # Handle the error or return None, or raise a custom exception
+        return None
+    except KeyError as e:
+        print(f"Debug: KeyError - {e}")
+        # Handle the error or return None, or raise a custom exception
+        return None
 
+# Admin required decorator
 def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if not current_user.is_admin:
-           return ("You do not have permission to access this page.") 
+        verify_jwt_in_request()  # Ensure JWT is valid
+        current_user = load_user_by_username(get_jwt_identity())  # Load the current user
+        print(current_user)
+        if not current_user or not current_user.is_admin:
+            return jsonify({"message": "You do not have permission to access this page."}), 403
         return f(*args, **kwargs)
-
     return decorated_function
 
 
@@ -59,7 +80,7 @@ def admin_required(f):
 def has_users():
     query = "SELECT count(username) as count FROM users"
     user_count = fetch_one(query)
-    return jsonify({"has_users": user_count['count'] >=1})
+    return jsonify({"has_users": user_count["count"] >= 1})
 
 
 @app.route("/regexes", methods=["POST"])
@@ -157,8 +178,8 @@ def users():
 
 
 @app.route("/users/<int:user_id>", methods=["GET", "PUT", "DELETE"])
-# @login_required
-# @admin_required
+@jwt_required()
+@admin_required
 def modify_user(user_id):
     if request.method == "GET":
         query = "SELECT * FROM users WHERE id = %s"
@@ -229,14 +250,15 @@ def refresh():
     try:
         # Get the current user's identity
         identity = get_jwt_identity()
-        
+
         # Create a new access token
         access_token = create_access_token(identity=identity)
-        
+
         return jsonify(access_token=access_token), 200
 
     except Exception as e:
         return jsonify({"msg": "An error occurred", "error": str(e)}), 500
+
 
 @app.route("/logout")
 @login_required
@@ -306,7 +328,7 @@ def create_record_objects(record_data):
     for data in record_data:
         record = Record(
             id=data.get("id"),
-            patient_id=data.get("patient_id"),
+            patient=get_patient_by_id(int(data.get("patient_id"))),
             record_date=data.get("record_date"),
             complaints=data.get("complaints"),
             history=data.get("history"),
@@ -320,7 +342,7 @@ def create_record_objects(record_data):
 
 
 @app.route("/patients/<int:patient_id>", methods=["GET", "PUT", "DELETE"])
-# @login_required
+@jwt_required()
 def modify_patient(patient_id):
     if request.method == "GET":
         query = "SELECT * FROM patients WHERE id = %s"
@@ -362,7 +384,23 @@ def modify_patient(patient_id):
         except Exception as e:
             return jsonify({"message": str(e)}), 500
 
-
+def get_patient_by_id(patient_id: int):
+    query = "SELECT * FROM patients WHERE id = %s"
+    patient_record = fetch_one(query, (patient_id,))
+    if patient_record:
+        patient = Patient(
+            id=patient_record.get("id"),
+            name=patient_record.get("name"),
+            birthday=patient_record.get("birthday"),
+            age=patient_record.get("age"),
+            contact=patient_record.get("contact"),
+            gender=patient_record.get("gender"),
+            photo=patient_record.get("photo"),
+            registered_date=patient_record.get("registered_date"),
+        )
+        return patient
+    return None
+    
 def extract_date_from_datetime(datetime_str):
     print(datetime_str)
     dt = datetime.fromisoformat(
@@ -370,9 +408,10 @@ def extract_date_from_datetime(datetime_str):
     )  # Convert to datetime object
     return dt.date()
 
+
 # records module
 @app.route("/records", methods=["GET", "POST"])
-# @jwt_required()
+@jwt_required()
 def medical_records():
     # current_user = get_jwt_identity()
     print(current_user)
@@ -384,7 +423,6 @@ def medical_records():
         diagnosed = data.get("diagnosed")
         treatment = data.get("treatment")
         patient_id = data.get("patient_id")
-        print("p id =", patient_id)
         next_review = extract_date_from_datetime(data.get("next_review"))
         charges = data.get("charges")
 
@@ -407,11 +445,12 @@ def medical_records():
     elif request.method == "GET":
         query = "SELECT * FROM medical_records"
         records = fetch_all(query)
-        return jsonify(records=records), 200
+        record_objects = create_record_objects(records)
+        return jsonify(records=[record.serialize() for record in record_objects]), 200
 
 
 @app.route("/records/<int:record_id>", methods=["GET", "PUT", "DELETE"])
-# @jwt_required()
+@jwt_required()
 def modify_record(record_id):
     if request.method == "GET":
         query = "SELECT * FROM medical_records WHERE id = %s"
@@ -521,8 +560,6 @@ def get_chart_data():
         patient_counts = [record["patient_count"] for record in patient_counts_data]
         income = [record["total_income"] for record in income_data]
 
-        # patient_counts = [0] * 7
-        # income = [0] * 7
 
         record_dates = {
             record["record_date"].strftime("%Y-%m-%d"): record["patient_count"]

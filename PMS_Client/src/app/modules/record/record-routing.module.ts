@@ -7,7 +7,7 @@ import {PatientViewComponent} from "../patient/patient-view/patient-view.compone
 
 const routes:Routes=[
   {path:"new/:id",component:RecordFormComponent},
-  {path:"new",component:PatientViewComponent},
+  {path:"new",component:RecordFormComponent},
   {path:"all",component:RecordViewComponent},
   {path:"modify/:id",component:RecordFormComponent}
 

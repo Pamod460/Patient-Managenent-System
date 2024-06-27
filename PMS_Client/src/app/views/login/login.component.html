@@ -20,7 +20,7 @@
               <button type="submit" class="btn btn-primary">Login</button>
             </div>
             <div class=" mt-3 text-center" >
-              <a  routerLink="/signup" *ngIf="canSignUp">SignUp</a>
+              <a  routerLink="/signup" *ngIf="canSignUp | async">SignUp</a>
             </div>
           </form>
         </div>

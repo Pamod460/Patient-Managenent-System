@@ -1,3 +1,15 @@
 .mat-mdc-table {
   background-color: #384e8c;
 }
+::ng-deep .search-form{
+  .mat-mdc-form-field-flex{
+    background-color: transparent;
+  }
+
+  .mdc-text-field--filled:not(.mdc-text-field--disabled) {
+    background-color: #384e8c;
+  }
+}
+.mat-mdc-table {
+  background-color: #384e8c;
+}

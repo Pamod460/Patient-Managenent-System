@@ -6,8 +6,8 @@
       <td mat-cell *matCellDef="let user"> {{ user.username }}</td>
     </ng-container>
     <ng-container matColumnDef="is_admin">
-      <th mat-header-cell *matHeaderCellDef> Name</th>
-      <td mat-cell *matCellDef="let user"> {{ user.is_admin }}</td>
+      <th mat-header-cell *matHeaderCellDef>Role</th>
+      <td mat-cell *matCellDef="let user"> <span *ngIf="user.is_admin">Admin</span> <span *ngIf="!user.is_admin"></span></td>
     </ng-container>
 
     <!-- Age Column -->

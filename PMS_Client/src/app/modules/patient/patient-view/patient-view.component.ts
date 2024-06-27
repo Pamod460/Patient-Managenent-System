@@ -4,6 +4,7 @@ import { Patient } from "../../../entity/Patient";
 import { MatDialog } from "@angular/material/dialog";
 import { DialogComponent } from "../../../utils/dialog/dialog.component";
 import { FormBuilder, FormGroup } from "@angular/forms";
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'app-patient-view',
@@ -16,7 +17,7 @@ export class PatientViewComponent implements OnInit {
   displayedColumns: string[] = ['name', 'age', 'birthday', 'contact', 'gender', 'registered_date', 'delete', 'modify', 'medrec'];
   filteredPatients: Patient[] = [];
 
-  constructor(private patientService: PatientService, private dialog: MatDialog, private fb: FormBuilder) {
+  constructor(private patientService: PatientService, private dialog: MatDialog, private fb: FormBuilder,private toastr:ToastrService) {
     this.searchForm = this.fb.group({
       birthday: [''],
       name: ['']
@@ -30,21 +31,17 @@ export class PatientViewComponent implements OnInit {
     });
   }
 
-  loadAll(): void {
-    this.patientService.getAllPatients().subscribe(
-      (response: any) => {
-        if (response && Array.isArray(response.patients)) {
-          this.patients = response.patients;
-          this.filteredPatients = [...this.patients];
-          console.log(this.patients);
-        } else {
-          console.error('Unexpected response format:', response);
-        }
-      },
-      (error: any) => {
-        console.error('Error fetching patients', error);
-      }
-    );
+  async loadAll(): Promise<void> {
+    await this.patientService.getAllPatients()
+      .then(patients => {
+        // @ts-ignore
+        this.patients = patients['patients'];
+       this.filteredPatients=this.patients
+      })
+      .catch(error => {
+        console.error('Error fetching patients:', error);
+        this.toastr.error('Failed to load patients');
+      });
   }
 
   filterPatients(values: any): void {
@@ -70,15 +67,14 @@ export class PatientViewComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.patientService.remove(patient.id).subscribe(
-          res => {
+        this.patientService.remove(patient.id).then( res => {
             this.loadAll(); // Reload the patient list after deletion
             console.log(res);
           },
           error => {
             console.error('Error deleting patient', error);
-          }
-        );
+          })
+
       }
     });
   }

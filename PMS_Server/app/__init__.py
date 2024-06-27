@@ -23,8 +23,8 @@ login_manager = LoginManager(app)
 login_manager.login_view = "login"
 bcrypt = Bcrypt(app)
 app.config['JWT_SECRET_KEY'] = 'your_jwt_secret_key'
-app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(minutes=1)  
-app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(minutes=2)
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=1)
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(minutes=15)  
+app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(minutes=60)
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=15)
 jwt = JWTManager(app)
 from app import routes

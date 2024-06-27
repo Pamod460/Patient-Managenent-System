@@ -33,28 +33,33 @@ export class PatientService {
     );
   }
 
-  getAllPatients(): Observable<Patient[]> {
+  async getAllPatients(): Promise<Patient[]> {
     const url = ApiConfig.createURL('patients');
-    return this.handle401Error(() => this.http.get<Patient[]>(url));
+    // @ts-ignore
+    return this.handle401Error(() => this.http.get<Patient[]>(url)).toPromise();
   }
 
-  getPatientById(id: string | null): Observable<Patient> {
+  async getPatientById(id: string | null): Promise<Patient> {
     const url = ApiConfig.createURL(`patients/${id}`);
-    return this.handle401Error(() => this.http.get<Patient>(url));
+    // @ts-ignore
+    return this.handle401Error(() => this.http.get<Patient>(url)).toPromise();
   }
 
-  save(patient: Patient): Observable<any> {
+  async save(patient: Patient): Promise<any[]> {
     const url = ApiConfig.createURL('patients');
-    return this.handle401Error(() => this.http.post<any[]>(url, patient));
+    // @ts-ignore
+    return this.handle401Error(() => this.http.post<any[]>(url, patient)).toPromise();
   }
 
-  remove(id: number | undefined): Observable<any> {
+ async remove(id: number | undefined): Promise<any[]> {
     const url = ApiConfig.createURL(`patients/${id}`);
-    return this.handle401Error(() => this.http.delete<any[]>(url));
+    // @ts-ignore
+   return this.handle401Error(() => this.http.delete<any[]>(url)).toPromise();
   }
 
-  modify(id: number | undefined, newPatient: Patient | undefined): Observable<any> {
+ async modify(id: number | undefined, newPatient: Patient | undefined): Promise<any[]> {
     const url = ApiConfig.createURL(`patients/${id}`);
-    return this.handle401Error(() => this.http.put<any[]>(url, newPatient));
+    // @ts-ignore
+   return this.handle401Error(() => this.http.put<any[]>(url, newPatient)).toPromise();
   }
 }

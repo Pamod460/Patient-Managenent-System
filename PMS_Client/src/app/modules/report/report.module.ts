@@ -6,6 +6,8 @@ import { ReportFormComponent } from './report-form/report-form.component';
 import { ReportViewComponent } from './report-view/report-view.component';
 import { ReportDailyViewComponent } from './report-daily-view/report-daily-view.component';
 import { ReportCustomViewComponent } from './report-custom-view/report-custom-view.component';
+import {MatCardModule} from "@angular/material/card";
+import {MatIconModule} from "@angular/material/icon";
 
 
 @NgModule({
@@ -16,9 +18,9 @@ import { ReportCustomViewComponent } from './report-custom-view/report-custom-vi
     ReportDailyViewComponent,
     ReportCustomViewComponent
   ],
-  imports: [
-    CommonModule, ReportRoutingModule
-  ]
+    imports: [
+        CommonModule, ReportRoutingModule, MatCardModule, MatIconModule
+    ]
 })
 export class ReportModule {
 }

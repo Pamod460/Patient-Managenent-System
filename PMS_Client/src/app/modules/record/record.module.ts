@@ -16,6 +16,7 @@ import {MatGridListModule} from "@angular/material/grid-list";
 import {MatTableModule} from "@angular/material/table";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {WebcamModule} from "ngx-webcam";
+import {MatCardModule} from "@angular/material/card";
 
 
 
@@ -25,36 +26,37 @@ import {WebcamModule} from "ngx-webcam";
     RecordViewComponent,
     RecordFormComponent
   ],
-  imports: [
-    CommonModule,
-    RecordRoutingModule,
-    MatButtonModule,
-    MatInputModule,
-    MatDatepickerModule,
-    ReactiveFormsModule,
-    MatSelectModule,
-    MatIconModule,
-    MatInputModule,
-    MatButtonModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatIconModule,
-    MatGridListModule,
-    ReactiveFormsModule,
-    MatInputModule,
-    MatButtonModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatIconModule,
-    MatGridListModule,
-    MatTableModule,
-    MatSnackBarModule,
-    WebcamModule,
-    NgOptimizedImage,
-  ]
+    imports: [
+        CommonModule,
+        RecordRoutingModule,
+        MatButtonModule,
+        MatInputModule,
+        MatDatepickerModule,
+        ReactiveFormsModule,
+        MatSelectModule,
+        MatIconModule,
+        MatInputModule,
+        MatButtonModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatIconModule,
+        MatGridListModule,
+        ReactiveFormsModule,
+        MatInputModule,
+        MatButtonModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatIconModule,
+        MatGridListModule,
+        MatTableModule,
+        MatSnackBarModule,
+        WebcamModule,
+        NgOptimizedImage,
+        MatCardModule,
+    ]
 })
 export class RecordModule { }

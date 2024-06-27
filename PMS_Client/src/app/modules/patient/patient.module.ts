@@ -17,6 +17,7 @@ import {MatTableModule} from "@angular/material/table";
 import { MatSnackBarModule} from "@angular/material/snack-bar";
 import {WebcamModule} from "ngx-webcam";
 import {ToastrModule} from "ngx-toastr";
+import {MatCardModule} from "@angular/material/card";
 
 
 
@@ -27,44 +28,40 @@ import {ToastrModule} from "ngx-toastr";
     PatientFormComponent,
     PatientViewComponent
   ],
-  imports: [
-    CommonModule,
-    PatientRoutingModule,
-    MatButtonModule,
-    MatInputModule,
-    MatDatepickerModule,
-    ReactiveFormsModule,
-    MatSelectModule,
-    MatIconModule,
-    MatInputModule,
-    MatButtonModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatIconModule,
-    MatGridListModule,
-    ReactiveFormsModule,
-    MatInputModule,
-    MatButtonModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatIconModule,
-    MatGridListModule,
-    MatTableModule,
-    MatSnackBarModule,
-    WebcamModule,
-    NgOptimizedImage,
+    imports: [
+        CommonModule,
+        PatientRoutingModule,
+        MatButtonModule,
+        MatInputModule,
+        MatDatepickerModule,
+        ReactiveFormsModule,
+        MatSelectModule,
+        MatIconModule,
+        MatInputModule,
+        MatButtonModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatIconModule,
+        MatGridListModule,
+        ReactiveFormsModule,
+        MatInputModule,
+        MatButtonModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatIconModule,
+        MatGridListModule,
+        MatTableModule,
+        MatSnackBarModule,
+        WebcamModule,
+        NgOptimizedImage,
 
-    ToastrModule.forRoot({
-      timeOut: 5000, // 5 seconds
-      positionClass: 'toast-bottom-right',
-      preventDuplicates: true,
-      // other options
-    })
+        ToastrModule.forRoot(),
+        MatCardModule
 
-  ]
+    ]
 })
 export class PatientModule { }

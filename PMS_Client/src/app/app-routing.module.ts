@@ -22,9 +22,10 @@ const routes: Routes = [{
     {path: "patients", loadChildren: () => import("./modules/patient/patient.module").then((m) => m.PatientModule)},
     {path: '', redirectTo: '/home', pathMatch: 'full'}]
 },
-  {path: 'signup', component: SignupComponent,canActivate:[signupGuard]},
-  {path: 'login', component: LoginComponent},
-  {path: '', redirectTo: '/login', pathMatch: 'full'}
+  { path: 'signup', component: SignupComponent },
+  { path: 'login', component: LoginComponent },
+  { path: '', redirectTo: '', pathMatch: 'full', canActivate: [signupGuard] },
+  { path: '**', redirectTo: '', pathMatch: 'full', canActivate: [signupGuard] }
 ];
 
 @NgModule({

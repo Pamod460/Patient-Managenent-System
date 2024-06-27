@@ -88,10 +88,10 @@ export class AuthService {
     return localStorage.getItem('access_token');
   }
 
-  async canSignup() {
+   canSignup() : Observable<boolean>{
     const url = ApiConfig.createURL('has_users')
-    let response = await this.http.get<any>(url).toPromise();
-    return !response.has_users
+    return   this.http.get<{ has_users: boolean }>(url).pipe( map(response => response.has_users));
+
   }
 
   signup(username: string, pw: string, confPw: string) {

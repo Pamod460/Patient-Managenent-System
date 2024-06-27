@@ -119,7 +119,6 @@ export class PatientFormComponent implements OnInit {
   }
 
   decodeBase64ToUtf8(base64String: string): string {
-    console.log(base64String)
     const byteCharacters = atob(base64String);
     const byteNumbers = Array.from(byteCharacters, char => char.charCodeAt(0));
     const byteArray = new Uint8Array(byteNumbers);
@@ -159,7 +158,11 @@ export class PatientFormComponent implements OnInit {
       let result = await this.patientService.save(this.patient)
       if (result) {
         // @ts-ignore
-        this.toastr.success(result['message'])
+        this.toastr.success(result.message,'success')
+        // @ts-ignore
+        // this._snackBar.open(result.message,'',{ horizontalPosition: "center",
+        //   verticalPosition: "top",
+        //   duration: 2000,})
       }
 
     } else {
@@ -171,6 +174,13 @@ export class PatientFormComponent implements OnInit {
       })
 
     }
+  }
+
+  compareBase64Images(base64Image1: string, base64Image2: string): boolean {
+    // Strip the base64 header for comparison
+    const base64WithoutHeader = (base64: string) => base64.split(',')[1];
+
+    return base64WithoutHeader(base64Image1) === base64WithoutHeader(base64Image2);
   }
 
   update() {
@@ -186,12 +196,16 @@ export class PatientFormComponent implements OnInit {
       let changes: any[] = []
 
       controlNames.forEach(val => {
-
-        if (this.patientForm.controls[val].value != this.oldPatient?.[val]) {
-
+        console.log(val, this.patientForm.controls[val].value !== this.oldPatient?.[val])
+        let isImageEqual
+        if (val == 'photo') {
+          isImageEqual = this.compareBase64Images(this.patientForm.controls[val].value, this.oldPatient?.[val])
+        }
+        if (this.patientForm.controls[val].value !== this.oldPatient?.[val] && !isImageEqual) {
           this.newPatient[val] = this.patientForm.controls[val].value
           if (val != "birthday") {
             changes.push({key: val, value: this.patientForm.controls[val].value})
+            console.log("changes", changes)
           }
         }
       })
@@ -203,13 +217,14 @@ export class PatientFormComponent implements OnInit {
       dialogRef.afterClosed().subscribe(async result => {
         if (result) {
           let res = await this.patientService.modify(this.oldPatient?.id, this.newPatient)
-          console.log(res)
+          // @ts-ignore
+          this._snackBar.open(res['message'])
         }
       })
     }
   }
 
   resetCamera() {
-    this.webcamImage=null
+    this.webcamImage = null
   }
 }
