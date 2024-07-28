@@ -17,6 +17,7 @@ import {MatTableModule} from "@angular/material/table";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {WebcamModule} from "ngx-webcam";
 import {MatCardModule} from "@angular/material/card";
+import { RecordDetailsViewComponent } from './record-details-view/record-details-view.component';
 
 
 
@@ -24,7 +25,8 @@ import {MatCardModule} from "@angular/material/card";
   declarations: [
     RecordComponent,
     RecordViewComponent,
-    RecordFormComponent
+    RecordFormComponent,
+    RecordDetailsViewComponent
   ],
     imports: [
         CommonModule,

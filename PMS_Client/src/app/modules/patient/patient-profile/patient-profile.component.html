@@ -1,0 +1,84 @@
+<mat-card class="profile-card">
+<mat-card-header class="profile-header">
+    <div mat-card-avatar class="profile-photo" [ngStyle]="{'background-image': 'url(' + patient.photo + ')'}"></div>
+    <mat-card-title>{{ patient.name }}</mat-card-title>
+    <mat-card-subtitle>{{ patient.gender }}</mat-card-subtitle>
+</mat-card-header>
+<mat-card-content>
+    <div class="row">
+
+      <div><strong>Name:</strong> {{ patient.name }}</div>
+      <div><strong>Birthday:</strong> {{ patient.birthday | date:'mediumDate' }}</div>
+      <div><strong>Age:</strong> {{ patient.age }}</div>
+      <div><strong>Gender:</strong> {{ patient.gender }}</div>
+      <div><strong>Contact:</strong> {{ patient.contact }}</div>
+      <div><strong>Registered Date:</strong> {{ patient.registered_date | date:'mediumDate' }}</div>
+    </div>
+</mat-card-content>
+</mat-card>
+<div class="new-rec">
+<a routerLink="/records/new/{{patient.id}}">
+    <mat-icon>add</mat-icon>
+    Add New Record
+</a>
+</div>
+
+<mat-card class="record-card mt-2 " *ngFor="let medicalRecord of medicalRecords">
+<mat-card-header class="rec-header">
+    {{ medicalRecord.record_date | date:'mediumDate' }}
+</mat-card-header>
+<mat-card-content>
+
+
+    <div class="row pt-3">
+      <div class="col-4">
+        <mat-card class="data-card" >
+          <mat-card-header class="rec-data-header">History:</mat-card-header>
+          <mat-card-content> {{ medicalRecord.history }}</mat-card-content>
+        </mat-card>
+      </div>
+      <div class="col-4">
+        <mat-card class="data-card">
+          <mat-card-header class="rec-data-header">Diagnosed :</mat-card-header>
+          <mat-card-content> {{ medicalRecord.diagnosed }}</mat-card-content>
+        </mat-card>
+      </div>
+      <div class="col-4">
+        <mat-card class="data-card">
+          <mat-card-header class="rec-data-header">Treatment:</mat-card-header>
+          <mat-card-content> {{ medicalRecord.treatment }}</mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+
+    <div class="row pt-2">
+      <div class="col-6">
+        <mat-card class="data-card">
+          <mat-card-header class="rec-data-header">Next Review:</mat-card-header>
+          <mat-card-content> {{ medicalRecord.next_review | date:'mediumDate' }}</mat-card-content>
+        </mat-card>
+
+      </div>
+      <div class="col-6">
+        <mat-card class="data-card">
+          <mat-card-header class="rec-data-header">Charges:</mat-card-header>
+          <mat-card-content> {{ medicalRecord.charges | currency :'Rs. ' }}</mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+
+
+    <div class="row pt-2">
+      <div class="col-12">
+        <mat-card class="data-card">
+          <mat-card-header class="rec-data-header">Complaints:</mat-card-header>
+          <mat-card-content> {{ medicalRecord.complaints }}</mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+</mat-card-content>
+</mat-card>
+<!--<a class="mt-3" routerLink="/records/new/{{patient.id}}">-->
+<!--<mat-icon>add</mat-icon>-->
+<!--Add New Record-->
+<!--</a>-->

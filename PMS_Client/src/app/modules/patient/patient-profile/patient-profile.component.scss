@@ -1,0 +1,88 @@
+.profile-card {
+  max-width: 1000px;
+  width: max-content;
+  margin: 20px auto;
+  background-color: #13356b; /* Dark background color */
+  color: #ffffff; /* Light text color */
+}
+mat-card{
+  box-shadow: none;
+}
+.profile-photo {
+  background-size: cover;
+  border-radius: 50%;
+  height: 100px;
+  width: 100px;
+}
+
+mat-card-title,
+mat-card-subtitle {
+  color: #ffffff;
+}
+
+.details {
+  display: flex;
+  justify-content: space-between;
+}
+
+.left, .right {
+  width: 50%;
+}
+
+.left div, .right div {
+  margin-bottom: 10px;
+}
+
+.left strong, .right strong {
+  display: inline-block;
+  width: 90px;
+}
+a{
+  text-decoration: none;
+  padding: 10px 15px;
+  font-size: 20px;
+  text-align: center;
+  cursor: pointer;
+  outline: none;
+  color: #fff;
+  background-color: #04AA6D;
+  border: none;
+  border-radius: 15px;
+  //box-shadow: 0 9px #999;
+
+}
+a:hover{
+  background-color: #3e8e41
+}
+a:active{
+  background-color: #3e8e41;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+.records-list{
+  display: flex;
+  flex-direction:row;
+justify-content: space-between;
+}
+.record-card .row :first-child  {
+  font-size: 12pt;
+
+}
+.record-card{
+  max-width: 1000px;
+}
+.rec-header{
+  background-color: #0f0f31;
+  justify-content: left;
+  padding-bottom: 10px;
+
+}
+.new-rec{
+  display: flex;
+  width: 100%;
+  justify-content: end;
+  padding-bottom: 1rem;
+}
+.data-card{
+  background-color: rgba(178, 169, 169, 0.5);
+}

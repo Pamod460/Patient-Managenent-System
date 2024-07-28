@@ -1,8 +1,6 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {User} from "../../../entity/User";
-import {Observable, Subject} from "rxjs";
-import {WebcamImage, WebcamInitError, WebcamUtil} from "ngx-webcam";
 import {MatDialog} from "@angular/material/dialog";
 import {ActivatedRoute} from "@angular/router";
 import {MatSnackBar} from "@angular/material/snack-bar";
@@ -17,28 +15,14 @@ import {DialogComponent} from "../../../utils/dialog/dialog.component";
 })
 export class UserFormComponent {
   userForm: FormGroup;
-  phoneValidationMessage: string | undefined;
-  serverImageData?: string;
-  public availableDevices: MediaDeviceInfo[] = [];
-  private initialDate: Date | undefined;
+  passwordValidationMessage: string | undefined;
   private oldUser: User = {};
   private newUser: User = {};
   private user: User = {};
-// webcam snapshot trigger
-  private trigger: Subject<void> = new Subject<void>();
 
-  // latest snapshot
-  public webcamImage: WebcamImage | null = null;
 
-  // webcam switch control
-  public showWebcam = true;
-  public multipleWebcamsAvailable = false;
-  public deviceId: string = '';
-
-  public errors: WebcamInitError[] = [];
-
-  public videoOptions: MediaTrackConstraints = {};
   isNew: boolean = true
+
 
   constructor(private dialog: MatDialog, private route: ActivatedRoute, private fb: FormBuilder, private _snackBar: MatSnackBar, private userService: UserService, private toastr: ToastrService) {
     this.route.url.subscribe(val => {
@@ -50,50 +34,19 @@ export class UserFormComponent {
     })
 
     this.userForm = this.fb.group({
-      name: ['', Validators.required],
-      birthday: ['', Validators.required],
-      age: [''],
-      gender: ['', Validators.required],
-      contact: ['', Validators.required],
-      photo: ['']
-    });
+      username: ['', Validators.required],
+      password: ['', [Validators.required, Validators.pattern(/^(?=[^A-Z]*[A-Z])(?=[^a-z]*[a-z])(?=\D*\d).{8,}$/)]],
+      confirmpassword: ['', [Validators.required, Validators.pattern(/^(?=[^A-Z]*[A-Z])(?=[^a-z]*[a-z])(?=\D*\d).{8,}$/)]],
+    }, { validators: this.passwordMatchValidator });
 
-    WebcamUtil.getAvailableVideoInputs().then((mediaDevices: MediaDeviceInfo[]) => {
-      this.multipleWebcamsAvailable = mediaDevices && mediaDevices.length > 1;
-    });
-    this.userForm.controls['birthday'].valueChanges.subscribe(val => {
-      this.setAge(val)
-    });
   }
 
-
-  public triggerSnapshot(): void {
-    this.trigger.next();
-  }
-
-  public handleInitError(error: WebcamInitError): void {
-    this.errors.push(error);
-  }
-
-  public handleImage(webcamImage: WebcamImage): void {
-    this.userForm.controls['photo'].setValue(webcamImage.imageAsDataUrl)
-    this.webcamImage = webcamImage;
-  }
-
-  public cameraWasSwitched(deviceId: string): void {
-
-    this.deviceId = deviceId;
-  }
-
-  public get triggerObservable(): Observable<void> {
-    return this.trigger.asObservable();
+  get passwordFormField() {
+    return this.userForm.get('password');
   }
 
   ngOnInit(): void {
-    WebcamUtil.getAvailableVideoInputs().then((mediaDevices: MediaDeviceInfo[]) => {
-      this.availableDevices = mediaDevices;
-      this.multipleWebcamsAvailable = mediaDevices && mediaDevices.length > 1;
-    });
+
     if (!this.isNew) {
       this.route.paramMap.subscribe(async params => {
         this.oldUser = await this.userService.getAllUsersById(params.get('id'))
@@ -103,74 +56,44 @@ export class UserFormComponent {
   }
 
   fillForm(user: User) {
-    this.userForm.controls['name'].setValue(user.usename)
-    // @ts-ignore
-    let dt = new Date(user.birthday)
-    this.userForm.patchValue({
-      birthday: dt
-    });
-
-
-    this.serverImageData = this.decodeBase64ToUtf8(user.photo)
-    this.userForm.controls['photo'].setValue(this.serverImageData)
-    console.log(this.serverImageData == this.userForm.controls['photo'].value)
+    this.userForm.controls['username'].setValue(user.username)
   }
 
-  decodeBase64ToUtf8(base64String: string): string {
-    const byteCharacters = atob(base64String);
-    const byteNumbers = Array.from(byteCharacters, char => char.charCodeAt(0));
-    const byteArray = new Uint8Array(byteNumbers);
-    const decoder = new TextDecoder('utf-8');
-    return decoder.decode(byteArray);
+  passwordMatchValidator(form: FormGroup): { [key: string]: boolean } | null {
+    return form.get('password')?.value === form.get('confirmpassword')?.value ? null : { 'passwordMismatch': true };
   }
-
-  setAge(birthDay: Date) {
-
-    if (birthDay) {
-      const today = new Date();
-      const birthDate = new Date(birthDay);
-      let age = today.getFullYear() - birthDate.getFullYear();
-      const monthDiff = today.getMonth() - birthDate.getMonth();
-
-      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-        age--;
-      }
-      this.userForm.patchValue({
-        age: age
-      });
-    }
-
-  }
-
   async add() {
+    console.log(this.userForm.get('password'),this.userForm.controls["confirmpassword"])
+    console.log(this.passwordMatchValidator(this.userForm))
+    if (this.userForm.valid && !this.userForm.errors?.['passwordMismatch']) {
 
-    if (this.userForm.valid) {
-      let currentDate = new Date();
-      this.user.usename = this.userForm.controls['name'].value
-      this.user.gender = this.userForm.controls['gender'].value
-      this.user.photo = this.userForm.controls['photo'].value
-      this.user.contact = this.userForm.controls['contact'].value
-      this.user.is_admin=this.userForm.controls['is_admin'].value
-      this.user.registered_date = currentDate
+      this.user.username = this.userForm.controls['username'].value
+      this.user.password = this.userForm.controls['password'].value
+
       let result = await this.userService.save(this.user)
       if (result) {
         // @ts-ignore
         this.toastr.success(result['message'])
+
+      }
+    } else {
+      if (this.userForm.errors?.['passwordMismatch']) {
+        this.toastr.warning("password dos not match")
+      } else {
+        this._snackBar.open('Please fill out all required fields', '', {
+          horizontalPosition: "center",
+          verticalPosition: "top",
+          duration: 2000,
+
+        })
       }
 
-    } else {
-      this._snackBar.open('Please fill out all required fields', '', {
-        horizontalPosition: "center",
-        verticalPosition: "top",
-        duration: 2000,
-
-      })
 
     }
   }
 
   update() {
-    if (this.userForm.pristine && this.serverImageData == this.userForm.controls['photo'].value) {
+    if (this.userForm.pristine) {
       this._snackBar.open("Nothing to be update", '', {
         duration: 2000,
         horizontalPosition: "right",
@@ -184,11 +107,7 @@ export class UserFormComponent {
       controlNames.forEach(val => {
 
         if (this.userForm.controls[val].value != this.oldUser?.[val]) {
-
           this.newUser[val] = this.userForm.controls[val].value
-          if (val != "birthday") {
-            changes.push({key: val, value: this.userForm.controls[val].value})
-          }
         }
       })
       const dialogRef = this.dialog.open(DialogComponent, {
@@ -198,14 +117,14 @@ export class UserFormComponent {
       })
       dialogRef.afterClosed().subscribe(async result => {
         if (result) {
-          let res = await this.userService.modify(this.oldUser?.id, this.newUser)
-          console.log(res)
+          this.userService.modify(this.oldUser?.id, this.newUser).then(res => {
+            console.log(res)
+
+          })
         }
       })
     }
   }
 
-  resetCamera() {
-    this.webcamImage=null
-  }
+
 }

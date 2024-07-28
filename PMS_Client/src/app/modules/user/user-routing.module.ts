@@ -7,6 +7,7 @@ import {UserComponent} from "./user.component";
 
 const routes:Routes=[{path:"",component:UserComponent},
   {path:"new",component:UserFormComponent},
+  {path:"modify/:id",component:UserFormComponent},
   {path:"all",component:UserViewComponent}
 ]
 

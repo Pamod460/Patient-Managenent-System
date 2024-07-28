@@ -13,8 +13,9 @@ export class ReportDailyViewComponent implements OnInit {
   dailyRecords?: any = [];
   totalCharges: number | undefined;
   private result: Report = {};
-
+  currentDate: string;
   constructor(private reportService: ReportService) {
+    this.currentDate = new Date().toISOString().split('T')[0];
   }
 
   ngOnInit(): void {
@@ -23,9 +24,17 @@ export class ReportDailyViewComponent implements OnInit {
 
   async loadReport() {
     try {
-      this.result = await this.reportService.getDailyReport();
+      this.reportService.getDailyReport().then( result=>{
+        // @ts-ignore
+        this.dailyRecords =result['daily_report']
+        // @ts-ignore
+        this.totalCharges = result['total'];
 
-      this.dailyRecords = this.result.records;
+        }
+
+      );
+
+      // this.dailyRecords = this.result.records;
       // @ts-ignore
       this.totalCharges = this.result.total['total'];
     } catch (error) {

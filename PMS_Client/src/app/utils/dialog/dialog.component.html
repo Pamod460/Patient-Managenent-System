@@ -1,21 +1,29 @@
-<h2 mat-dialog-title>{{ data.title }}</h2>
+
 <mat-dialog-content>
-  <div class="row">{{ data.message }}</div>
-  <br>
-  <div *ngIf="data.changes">
-    <div class="row" *ngFor="let ch of data.changes">
-      <div *ngIf="!checkUTF8(ch.value)">
-        <div class="col-6">{{ ch.key }}</div>
-        <div class="col-6">{{ ch.value }}</div>
+  <mat-card>
+    <mat-card-header>
+      {{ data.title }}
+    </mat-card-header>
+    <mat-card-content>
+      <div class="row">{{ data.message }}</div>
+      <br>
+      <div *ngIf="data.changes">
+        <div class="row" *ngFor="let ch of data.changes">
+          <div *ngIf="!checkUTF8(ch.value)">
+            <div class="col-6">{{ ch.key }}</div>
+            <div class="col-6">{{ ch.value }}</div>
+          </div>
+          <div *ngIf="checkUTF8(ch.value)">
+            <div class="col-6">{{ ch.key }}</div>
+            <div class="col-6"><img width="150px" height="100px" src="{{ch.value}}" alt=""></div>
+          </div>
+        </div>
+        <br>
+        <p>Do you confirm them?</p>
       </div>
-      <div *ngIf="checkUTF8(ch.value)">
-        <div class="col-6">{{ ch.key }}</div>
-        <div class="col-6"><img width="150px" height="100px" src="{{ch.value}}" alt=""></div>
-      </div>
-    </div>
-    <br>
-    <p>Do you confirm them?</p>
-  </div>
+    </mat-card-content>
+  </mat-card>
+
 </mat-dialog-content>
 <mat-dialog-actions>
   <button mat-button (click)="onNoClick()">No</button>

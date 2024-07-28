@@ -1,34 +1,37 @@
 <form [formGroup]="recordForm" id="medical-record-form" enctype="multipart/form-data" class="medical-record-form">
-  <h2 class="text-center">Add Medical Record</h2>
-  <mat-label id="message" class="pb-4 mb-3">Patient : {{ patient.name }}</mat-label>
+  <h2 *ngIf="isNew" class="text-center">Add Medical Record</h2>
+  <h2 *ngIf="!isNew" class="text-center">Modify Record</h2>
+  <div class="pb-2 mb-2">
+    <mat-label id="message">Patient : {{ patient.name }}</mat-label>
+  </div>
 
   <div class="row">
     <div class="col-6">
       <mat-form-field appearance="fill" class="full-width">
         <mat-label>Date</mat-label>
-        <input matInput [matDatepicker]="picker1" formControlName="record_date" >
+        <input matInput [matDatepicker]="picker1" formControlName="record_date">
         <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
         <mat-datepicker #picker1></mat-datepicker>
       </mat-form-field>
 
       <mat-form-field appearance="fill" class="full-width">
         <mat-label>Complaints</mat-label>
-        <textarea matInput formControlName="complaints" ></textarea>
+        <textarea matInput formControlName="complaints"></textarea>
       </mat-form-field>
 
       <mat-form-field appearance="fill" class="full-width">
         <mat-label>History</mat-label>
-        <textarea matInput formControlName="history" ></textarea>
+        <textarea matInput formControlName="history"></textarea>
       </mat-form-field>
 
       <mat-form-field appearance="fill" class="full-width">
         <mat-label>Diagnosed</mat-label>
-        <textarea matInput formControlName="diagnosed" ></textarea>
+        <textarea matInput formControlName="diagnosed"></textarea>
       </mat-form-field>
 
       <mat-form-field appearance="fill" class="full-width">
         <mat-label>Treatment</mat-label>
-        <textarea matInput formControlName="treatment" ></textarea>
+        <textarea matInput formControlName="treatment"></textarea>
       </mat-form-field>
 
       <mat-form-field appearance="fill" class="full-width">
@@ -83,5 +86,6 @@
       </div>
     </div>
   </div>
-  <button mat-raised-button color="primary" class="full-width" (click)="addRecord()">Add Record</button>
+  <button *ngIf="isNew" mat-raised-button color="primary" class="full-width" (click)="addRecord()">Add Record</button>
+  <button *ngIf="!isNew" mat-raised-button color="accent" class="full-width" (click)="update()">Update Record</button>
 </form>

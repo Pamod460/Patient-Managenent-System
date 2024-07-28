@@ -70,3 +70,7 @@
     padding: 10px 20px;
   }
 }
+::ng-deep .user-form{
+  .mdc-text-field--filled:not(.mdc-text-field--disabled) {
+    background-color: #384e8c;
+  }}

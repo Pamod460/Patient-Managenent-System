@@ -31,7 +31,7 @@ export class UserViewComponent {
 
   async delete(user: User) {
     const dialogRef = this.dialog.open(DialogComponent, {
-      data: {title: 'Delete User', message: 'Are you sure you want to Delete this User?\n' + user.usename},
+      data: {title: 'Delete User', message: 'Are you sure you want to Delete this User?\n' + user.username},
     })
     dialogRef.afterClosed().subscribe(async result => {
       let res;

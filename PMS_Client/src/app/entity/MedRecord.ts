@@ -10,5 +10,7 @@ export interface MedRecord {
   treatment?: string;
   next_review?: Date; // Use string for date to handle ISO format
   charges?: number;
+  first_image?:any
+  second_image?:any
   [key: string]: any;
 }

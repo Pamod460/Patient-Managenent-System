@@ -4,6 +4,7 @@
 
     <thead>
     <tr> <th colspan="2" class="p-0 m-0"><h2 class="text-center m-0 p-0">Daily Report</h2></th></tr>
+    <tr> <th colspan="2" class="  p-0 m-0"><h3 class="text-start ps-2 m-0 p-0">Date: {{currentDate}} </h3></th></tr>
     <tr *ngIf="dailyRecords.length !== 0">
       <th>Patient Name</th>
       <th>Charges</th>
@@ -12,11 +13,11 @@
     <tbody id="report-body">
     <tr  *ngFor="let record of dailyRecords">
       <td>{{ record.patient_name }}</td>
-      <td>{{ record.charges }}</td>
+      <td>{{ record.charges | currency :'Rs. '}}</td>
     </tr>
     <tr *ngIf="dailyRecords.length !== 0">
       <td style="font-size: large;font-weight: bold">Total</td>
-      <td>{{ totalCharges }}</td>
+      <td>{{ totalCharges | currency :'Rs. '}}</td>
     </tr>
     <tr *ngIf="dailyRecords.length === 0">
       <td colspan="2" class="text-center">No records found for today.</td>

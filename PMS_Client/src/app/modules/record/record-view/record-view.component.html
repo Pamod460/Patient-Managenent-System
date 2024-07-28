@@ -102,13 +102,12 @@
     </ng-container>
     <ng-container matColumnDef="medrec">
       <th mat-header-cell *matHeaderCellDef></th>
-      <td mat-cell *matCellDef="let record" routerLink="/records/new/{{record.patient.id}}">
+      <td mat-cell *matCellDef="let record" routerLink="/records/new/{{record.patient.id}}" >
         <button mat-icon-button>
-          <mat-icon>note_add</mat-icon>
+          <mat-icon>visibility</mat-icon>
         </button>
       </td>
     </ng-container>
-
     <!-- Header and Row Declarations -->
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>

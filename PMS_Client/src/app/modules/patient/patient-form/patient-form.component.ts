@@ -54,7 +54,7 @@ export class PatientFormComponent implements OnInit {
       birthday: ['', Validators.required],
       age: [''],
       gender: ['', Validators.required],
-      contact: ['', Validators.required],
+      contact: ['', [Validators.required, Validators.pattern("^(?:0|94|\\+94)?(7[0-9]{8})$")]],
       photo: ['']
     });
 
@@ -97,7 +97,7 @@ export class PatientFormComponent implements OnInit {
     if (!this.isNew) {
       this.route.paramMap.subscribe(async params => {
         this.oldPatient = await this.patientService.getPatientById(params.get('id'))
-        console.log(this.oldPatient)
+        this.oldPatient = this.oldPatient['patient']
         this.fillForm(this.oldPatient)
       });
     }
@@ -113,9 +113,9 @@ export class PatientFormComponent implements OnInit {
     this.patientForm.controls['age'].setValue(patient.age)
     this.patientForm.controls['gender'].setValue(patient.gender)
     this.patientForm.controls['contact'].setValue(patient.contact)
-    this.serverImageData = this.decodeBase64ToUtf8(patient.photo)
+    this.serverImageData = patient.photo
     this.patientForm.controls['photo'].setValue(this.serverImageData)
-    console.log(this.serverImageData == this.patientForm.controls['photo'].value)
+
   }
 
   decodeBase64ToUtf8(base64String: string): string {
@@ -145,7 +145,7 @@ export class PatientFormComponent implements OnInit {
   }
 
   async add() {
-
+    console.log(this.patientForm.valid)
     if (this.patientForm.valid) {
       let currentDate = new Date();
       this.patient.name = this.patientForm.controls['name'].value
@@ -155,16 +155,25 @@ export class PatientFormComponent implements OnInit {
       this.patient.photo = this.patientForm.controls['photo'].value
       this.patient.contact = this.patientForm.controls['contact'].value
       this.patient.registered_date = currentDate
-      let result = await this.patientService.save(this.patient)
-      if (result) {
-        // @ts-ignore
-        this.toastr.success(result.message,'success')
-        // @ts-ignore
-        // this._snackBar.open(result.message,'',{ horizontalPosition: "center",
-        //   verticalPosition: "top",
-        //   duration: 2000,})
-      }
-
+      let controlNames = Object.keys(this.patientForm.controls);
+      let changes: any[] = []
+      let msg = "you have following data to save :"
+      controlNames.forEach(val => {
+        changes.push({key: val, value: this.patientForm.controls[val].value})
+      })
+      const dialogRef = this.dialog.open(DialogComponent, {
+        data: {title: 'Update Patient', message: msg, changes: changes}
+      })
+      dialogRef.afterClosed().subscribe(async res => {
+        if (res) {
+          let result = await this.patientService.save(this.patient)
+          if (result) {
+            // @ts-ignore
+            this.toastr.success(result['status'], 'success')
+            this.patientForm.reset()
+          }
+        }
+      })
     } else {
       this._snackBar.open('Please fill out all required fields', '', {
         horizontalPosition: "center",
@@ -183,7 +192,16 @@ export class PatientFormComponent implements OnInit {
     return base64WithoutHeader(base64Image1) === base64WithoutHeader(base64Image2);
   }
 
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
   update() {
+
     if (this.patientForm.pristine && this.serverImageData == this.patientForm.controls['photo'].value) {
       this._snackBar.open("Nothing to be update", '', {
         duration: 2000,
@@ -191,36 +209,53 @@ export class PatientFormComponent implements OnInit {
         verticalPosition: "top"
       })
     } else {
-      let controlNames = Object.keys(this.patientForm.controls);
-      let msg = "You have Following Updates:"
-      let changes: any[] = []
+      console.log(this.patientForm.valid)
+      if (this.patientForm.valid) {
+        let controlNames = Object.keys(this.patientForm.controls);
+        let msg = "You have Following Updates:"
+        let changes: any[] = []
 
-      controlNames.forEach(val => {
-        console.log(val, this.patientForm.controls[val].value !== this.oldPatient?.[val])
-        let isImageEqual
-        if (val == 'photo') {
-          isImageEqual = this.compareBase64Images(this.patientForm.controls[val].value, this.oldPatient?.[val])
-        }
-        if (this.patientForm.controls[val].value !== this.oldPatient?.[val] && !isImageEqual) {
-          this.newPatient[val] = this.patientForm.controls[val].value
-          if (val != "birthday") {
-            changes.push({key: val, value: this.patientForm.controls[val].value})
-            console.log("changes", changes)
+        controlNames.forEach(val => {
+          // console.log(val, this.patientForm.controls[val].value !== this.oldPatient?.[val])
+          let isImageEqual
+          let isBirthdayEqual
+          if (val == 'photo') {
+            isImageEqual = this.compareBase64Images(this.patientForm.controls[val].value, this.oldPatient?.[val])
           }
-        }
-      })
-      const dialogRef = this.dialog.open(DialogComponent, {
+          if (val == "birthday") {
 
-        data: {title: 'Update Patient', message: msg, changes: changes}
-
-      })
-      dialogRef.afterClosed().subscribe(async result => {
-        if (result) {
-          let res = await this.patientService.modify(this.oldPatient?.id, this.newPatient)
-          // @ts-ignore
-          this._snackBar.open(res['message'])
-        }
-      })
+            let newbd = new Date(this.patientForm.controls[val].value)
+            // @ts-ignore
+            let oldbd = new Date(this.oldPatient[val])
+            isBirthdayEqual = newbd.getTime() == oldbd.getTime()
+          }
+          if (this.patientForm.controls[val].value !== this.oldPatient?.[val] && !isImageEqual && !isBirthdayEqual) {
+            this.newPatient[val] = this.patientForm.controls[val].value
+            if (val != "birthday") {
+              changes.push({key: val, value: this.patientForm.controls[val].value})
+              console.log("changes", changes)
+            } else {
+              changes.push({key: val, value: this.formatDate(this.patientForm.controls[val].value)})
+              console.log("changes", changes)
+            }
+          }
+        })
+        const dialogRef = this.dialog.open(DialogComponent, {
+          data: {title: 'Update Patient', message: msg, changes: changes}
+        })
+        dialogRef.afterClosed().subscribe(async result => {
+          if (result) {
+            this.patientService.modify(this.oldPatient?.id, this.newPatient).then(res => {
+              // @ts-ignore
+              this.toastr.success(res['status'])
+              this.patientForm.reset()
+              this.serverImageData = ''
+            })
+          }
+        })
+      } else {
+        this.toastr.error("contact number is incorrect")
+      }
     }
   }
 

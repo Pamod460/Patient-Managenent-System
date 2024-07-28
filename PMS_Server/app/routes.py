@@ -15,7 +15,9 @@ import os
 import base64
 import re
 from app import app, mysql, login_manager, bcrypt
-from app.models import Record, User, Patient
+from app.models.patient import Patient
+from app.models.record import Record
+from app.models.user import User
 from app.utils import check_users_existence, hash_password, user_exists
 from app.db import fetch_one, fetch_all, execute_query
 from datetime import datetime, timedelta
@@ -30,11 +32,11 @@ def before_request():
     session.modified = True
 
 
-@app.route("/protected", methods=["GET"])
-@jwt_required()
-def protected():
-    current_user = get_jwt_identity()
-    return jsonify(logged_in_as=current_user), 200
+# @app.route("/protected", methods=["GET"])
+# @jwt_required()
+# def protected():
+#     current_user = get_jwt_identity()
+#     return jsonify(logged_in_as=current_user), 200
 
 
 # User loading functions
@@ -43,8 +45,9 @@ def load_user(user_id):
     query = "SELECT * FROM users WHERE id = %s"
     user = fetch_one(query, (user_id,))
     if user:
-        return User(user['id'], user['username'], user['password'], user['is_admin'])
+        return User(user["id"], user["username"], user["password"], user["is_admin"])
     return None
+
 
 def load_user_by_username(username):
     query = "SELECT * FROM users WHERE username = %s"
@@ -53,7 +56,7 @@ def load_user_by_username(username):
     if user is None:
         return None
     try:
-        return User(user['id'], user['username'], user['password'], user['is_admin'])    
+        return User(user["id"], user["username"], user["password"], user["is_admin"])
     except IndexError as e:
         print(f"Debug: IndexError - {e}")
         # Handle the error or return None, or raise a custom exception
@@ -63,16 +66,23 @@ def load_user_by_username(username):
         # Handle the error or return None, or raise a custom exception
         return None
 
+
 # Admin required decorator
 def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         verify_jwt_in_request()  # Ensure JWT is valid
-        current_user = load_user_by_username(get_jwt_identity())  # Load the current user
+        current_user = load_user_by_username(
+            get_jwt_identity()
+        )  # Load the current user
         print(current_user)
         if not current_user or not current_user.is_admin:
-            return jsonify({"message": "You do not have permission to access this page."}), 403
+            return (
+                jsonify({"message": "You do not have permission to access this page."}),
+                403,
+            )
         return f(*args, **kwargs)
+
     return decorated_function
 
 
@@ -384,6 +394,7 @@ def modify_patient(patient_id):
         except Exception as e:
             return jsonify({"message": str(e)}), 500
 
+
 def get_patient_by_id(patient_id: int):
     query = "SELECT * FROM patients WHERE id = %s"
     patient_record = fetch_one(query, (patient_id,))
@@ -400,13 +411,14 @@ def get_patient_by_id(patient_id: int):
         )
         return patient
     return None
-    
+
+
 def extract_date_from_datetime(datetime_str):
-    print(datetime_str)
-    dt = datetime.fromisoformat(
-        datetime_str.replace("Z", "+00:00")
-    )  # Convert to datetime object
-    return dt.date()
+    if datetime_str:
+        dt = datetime.fromisoformat(
+            datetime_str.split("T")[0],
+        )  # Convert to datetime object
+        return dt.date()
 
 
 # records module
@@ -417,7 +429,7 @@ def medical_records():
     print(current_user)
     if request.method == "POST":
         data = request.get_json()
-        record_date = extract_date_from_datetime(data.get("record_date"))
+        record_date = data.get("record_date").split("T")[0]
         complaints = data.get("complaints")
         history = data.get("history")
         diagnosed = data.get("diagnosed")
@@ -449,6 +461,13 @@ def medical_records():
         return jsonify(records=[record.serialize() for record in record_objects]), 200
 
 
+def dynamic_insert(table, data):
+    columns = ", ".join(data.keys())
+    placeholders = ", ".join(["%s"] * len(data))
+    query = f"INSERT INTO {table} ({columns}) VALUES ({placeholders})"
+    execute_query(query, tuple(data.values()))
+
+
 @app.route("/records/<int:record_id>", methods=["GET", "PUT", "DELETE"])
 @jwt_required()
 def modify_record(record_id):
@@ -478,8 +497,21 @@ def modify_record(record_id):
         ]
         for field in allowed_fields:
             if field in data:
-                update_fields.append(f"{field} = %s")
-                update_values.append(data[field])
+                print(field)
+                if field == "record_date" or field == "next_review":
+                    try:
+                        # Parsing date fields to ensure proper format
+                        date_value = datetime.fromisoformat(data[field]).date()
+                        update_fields.append(f"{field} = %s")
+                        update_values.append(date_value)
+                    except ValueError:
+                        return (
+                            jsonify({"message": f"Invalid date format for {field}."}),
+                            400,
+                        )
+                else:
+                    update_fields.append(f"{field} = %s")
+                    update_values.append(data[field])
 
         if update_fields:
             query = (
@@ -560,7 +592,6 @@ def get_chart_data():
         patient_counts = [record["patient_count"] for record in patient_counts_data]
         income = [record["total_income"] for record in income_data]
 
-
         record_dates = {
             record["record_date"].strftime("%Y-%m-%d"): record["patient_count"]
             for record in patient_counts_data
@@ -592,8 +623,12 @@ def get_total_charges():
 
 
 @app.route("/daily_report")
-# @jwt_required()
+@jwt_required()
 def get_daily_report():
     records = fetch_daily_report()
     total = get_total_charges()
-    return jsonify({"records": records, "total": total})
+
+    if records is not None and total is not None:
+        data = {"records": records, "total": total}
+        return jsonify(data), 200
+    return jsonify({"error": "Could not fetch the daily report"}), 404

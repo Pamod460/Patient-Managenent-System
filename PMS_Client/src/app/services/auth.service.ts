@@ -12,11 +12,8 @@ import {Router} from "@angular/router";
   providedIn: 'root'
 })
 export class AuthService {
-  constructor(private http: HttpClient,private router :Router) {
-  }
-
+  constructor(private http: HttpClient,private router :Router) {}
   // URL to your Flask login endpoint
-
   login(username: string, password: string): Observable<boolean> {
     const url = ApiConfig.createURL('login');
     const hashedPassword = CryptoJS.SHA256(password).toString();
@@ -77,7 +74,7 @@ export class AuthService {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
     localStorage.removeItem('currentUser');
-    this.router.navigate(['/login']);
+    this.router.navigate(['/login']).then(r =>{console.log(r)});
   }
 
   isLoggedIn(): boolean {
@@ -94,10 +91,10 @@ export class AuthService {
 
   }
 
-  signup(username: string, pw: string, confPw: string) {
+  signup(username: string, pw: string) {
     const password = CryptoJS.SHA256(pw).toString();
-    const confirmPassword = CryptoJS.SHA256(confPw).toString();
+    const is_admin=true;
     const url = ApiConfig.createURL('signup')
-    return this.http.post<any>(url, {username, password, confirmPassword});
+    return this.http.post<any>(url, {username, password, is_admin});
   }
 }

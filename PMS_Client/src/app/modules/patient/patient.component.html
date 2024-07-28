@@ -1,37 +1,23 @@
 <div class="container mt-5">
   <div class="row justify-content-center">
     <div class="col-md-6 col-lg-6 col-sm-6">
-      <mat-card routerLink="/patients" class="dashboard-card">
-        <mat-card-content>
-          <mat-icon>people</mat-icon>
-          <span>Patients</span>
-        </mat-card-content>
-      </mat-card>
-
-    </div>
-    <div class="col-md-6 col-lg-6 col-sm-6">
       <mat-card class="dashboard-card">
-        <mat-card-content>
+        <mat-card-content routerLink="new">
           <mat-icon>assessment</mat-icon>
-          <span>Reports</span>
+          <br>
+          <span>Add New Patient</span>
         </mat-card-content>
       </mat-card>
     </div>
     <div class="col-md-6 col-lg-6 col-sm-6">
       <mat-card class="dashboard-card">
-        <mat-card-content>
+        <mat-card-content routerLink="all">
           <mat-icon>folder</mat-icon>
-          <span>Records</span>
+          <br>
+          <span>View All Patient</span>
         </mat-card-content>
       </mat-card>
     </div>
-    <div class="col-md-6 col-lg-6 col-sm-6">
-      <mat-card routerLink="/users" class="dashboard-card">
-        <mat-card-content>
-          <mat-icon>person</mat-icon>
-          <span>User</span>
-        </mat-card-content>
-      </mat-card>
-    </div>
+
   </div>
 </div>

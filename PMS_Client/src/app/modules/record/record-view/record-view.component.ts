@@ -15,7 +15,6 @@ export class RecordViewComponent implements OnInit{
   records: MedRecord[] = [];
   filteredRecords: MedRecord[] = [];
   displayedColumns: string[] = ['id', 'patient_id', 'record_date', 'complaints', 'history', 'diagnosed', 'treatment', 'next_review', 'charges', 'delete', 'modify', 'medrec'];
-  // @ts-ignore
   searchForm: FormGroup;
 
   constructor(private recordService: RecordService, private dialog: MatDialog,private fb: FormBuilder) {
@@ -29,7 +28,6 @@ export class RecordViewComponent implements OnInit{
 
   ngOnInit(): void {
     this.loadAll();
-
     this.searchForm.valueChanges.subscribe(() => {
       this.search();
     });
@@ -73,4 +71,6 @@ export class RecordViewComponent implements OnInit{
       }
     });
   }
+
+
 }

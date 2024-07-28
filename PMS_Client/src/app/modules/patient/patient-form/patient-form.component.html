@@ -36,7 +36,7 @@
 
       <mat-form-field appearance="fill" class="full-width">
         <mat-label>Contact</mat-label>
-        <input matInput formControlName="contact" required>
+        <input matInput formControlName="contact">
         <mat-error *ngIf="phoneValidationMessage">{{ phoneValidationMessage }}</mat-error>
       </mat-form-field>
       <input type="hidden" formControlName="photo">

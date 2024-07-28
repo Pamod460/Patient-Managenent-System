@@ -21,7 +21,7 @@ export class SignupComponent {
       return;
     }
 
-    this.authService.signup(this.username, this.password,this.confirmPassword).subscribe(response => {
+    this.authService.signup(this.username, this.password).subscribe(response => {
       console.log(response);
       if (response) {
         this.router.navigate(['home']);

@@ -13,6 +13,7 @@ import {ToastrService} from "ngx-toastr";
 })
 export class PatientViewComponent implements OnInit {
   patients: Patient[] = [];
+  patient :Patient={};
   searchForm: FormGroup;
   displayedColumns: string[] = ['name', 'age', 'birthday', 'contact', 'gender', 'registered_date', 'delete', 'modify', 'medrec'];
   filteredPatients: Patient[] = [];
@@ -69,7 +70,8 @@ export class PatientViewComponent implements OnInit {
       if (result) {
         this.patientService.remove(patient.id).then( res => {
             this.loadAll(); // Reload the patient list after deletion
-            console.log(res);
+            // @ts-ignore
+            this.toastr.info(res['status'])
           },
           error => {
             console.error('Error deleting patient', error);
@@ -78,4 +80,6 @@ export class PatientViewComponent implements OnInit {
       }
     });
   }
+
+
 }
